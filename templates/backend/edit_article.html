@@ -1,0 +1,73 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="add_article">
+            <div class="alert-success text-center">编辑文章</div>
+
+            <div class="add_article_region">
+                <div class="title form-group">
+                    <label for="">标题</label>
+                    <div>
+                        <input type="text" name="title" value="{{ article_obj.title }}">
+                    </div>
+                </div>
+
+                <div class="content form-group">
+                    <label for="">内容(Kindeditor编辑器，不支持拖放/粘贴上传图片) </label>
+                    <div>
+                        <textarea name="content" id="article_content" cols="30" rows="10">{{ article_obj.content }}</textarea>
+                    </div>
+                </div>
+                <div>
+                    <ul>
+                        {% for cate in cate_list %}
+                            <li>{{ cate.title }}<input type="radio" name="cate" checked="checked" value="{{ cate.pk }}"></li>
+                        {% endfor %}
+                    </ul>
+                    <hr>
+                    <ul>
+                        {% for tag in tags %}
+                            <li>{{ tag.title }} <input type="checkbox" name="tags"  checked="checked" value="{{ tag.pk }}"></li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
+                <input type="submit" class="btn btn-default">
+
+            </div>
+
+        </div>
+    </form>
+    <script charset="utf-8" src="/static/kindeditor/kindeditor-all.js"></script>
+    <script>
+        KindEditor.ready(function (K) {
+            window.editor = K.create('#article_content', {
+                width: 600,
+                height: 600,
+                resizeType: 0,
+                uploadJson: "/upload/",
+                extraFileUploadParams: {
+                    csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val()
+                },
+                filePostName: "upload_img"
+            });
+        });
+
+        {#html = editor.html();#}
+        {##}
+        {#// 同步数据后可以直接取得textarea的value#}
+        {#editor.sync();#}
+        {#html = document.getElementById('{{ article_content }}').value; // 原生API#}
+        {#html = K('#article_content').val(); // KindEditor Node API#}
+        {#console.log(html);#}
+        {#html = $('#article_content').val(); // jQuery#}
+        {##}
+        {#// 设置HTML内容#}
+        {#editor.html('{{ article_content }}');#}
+    </script>
+
+
+{% endblock %}
